@@ -1,6 +1,8 @@
 // Importar as bibliotecas necessárias
 import express from "express";
 import dotenv from "dotenv";
+import storesRoutes from "./routes/stores.js";
+import productsRoutes from "./routes/products.js";
 import prisma from "./db.js"; // Importar nossa conexão com o banco
 
 // Carregar variáveis de ambiente do arquivo .env
@@ -11,6 +13,10 @@ const app = express();
 
 // Middleware para processar JSON nas requisições
 app.use(express.json());
+
+// Rotas de stores e products
+app.use("/stores", storesRoutes);
+app.use("/products", productsRoutes);
 
 //Healthcheck
 app.get("/", (_req, res) => res.json({ ok: true, service: "API 3º Bimestre" }));
@@ -44,6 +50,7 @@ app.get("/usuarios", async (_req, res) => {
     res.status(500).json({ error: "Erro ao listar usuários" });
   }
 });
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
