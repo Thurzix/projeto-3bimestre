@@ -28,13 +28,12 @@ app.post("/usuarios", async (req, res) => {
     const novoUsuario = await prisma.user.create({
       data: { name, email, password }
     });
-
     res.status(201).json(novoUsuario);
   } catch (error) {
+    console.error(error); // Mostra o erro detalhado no terminal
     if (error.code === "P2002") {
       return res.status(409).json({ error: "E-mail já cadastrado" });
     }
-
     res.status(500).json({ error: "Erro ao criar usuário" });
   }
 });
