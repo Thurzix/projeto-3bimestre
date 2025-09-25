@@ -52,6 +52,36 @@ app.get("/usuarios", async (_req, res) => {
 });
 
 
+//UPDATE: PUT /usuarios/:id
+app.put("/usuarios/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, email, password } = req.body;
+    const usuarioAtualizado = await prisma.user.update({
+      where: { id: Number(id) },
+      data: { name, email, password }
+    });
+    res.json(usuarioAtualizado);
+  } catch (error) {
+    if (error.code === "P2002") {
+      return res.status(409).json({ error: "E-mail já cadastrado" });
+    }
+    res.status(500).json({ error: "Erro ao atualizar usuário" });
+  }
+});
+
+//DELETE: DELETE /usuarios/:id
+app.delete("/usuarios/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await prisma.user.delete({ where: { id: Number(id) } });
+    res.status(204).send();
+  } catch (error) {
+    res.status(500).json({ error: "Erro ao remover usuário" });
+  }
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
